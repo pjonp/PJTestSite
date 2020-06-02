@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-//  mongoose.connect(<Your URI>, { useNewUrlParser: true, useUnifiedTopology: true });
+
 mongo.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
   if (err) {
     console.log('Database error: ' + err);
