@@ -28,7 +28,6 @@ module.exports = function(app, db) {
       callbackURL: process.env.TWITCH_CALLBACK
     },
     function(accessToken, refreshToken, profile, done) {
-      //  console.log('b', profile)
       //  console.log('d',cryptr.encrypt(refreshToken));
       fetch(`https://id.twitch.tv/oauth2/revoke?client_id=${process.env.TWITCH_CLIENT_ID}&token=${accessToken}`, {
           method: 'POST',
@@ -38,15 +37,20 @@ module.exports = function(app, db) {
         })
         .catch(error => console.error(`Error Removing Token`));
 
-      db.collection('userdata').findOne({
+      db.collection('userdata').findOneAndUpdate({
         t_id: profile.id
-      }, function(err, user) {
-        console.log('User ' + profile.display_name + ' attempted to log in.');
-        if (err) {
+      }, {
+        $set: {
+          t_name: profile.display_name,
+          t_image: profile.profile_image_url
+        }
+      }, {
+        returnOriginal: false
+      }, (error, result) => {
+        if (error) {
+          console.log('err', error);
           done(null, false);
-        } else if (user) {
-          done(null, user);
-        } else {
+        } else if (!result.value) {
           db.collection('userdata').insertOne({
               t_id: profile.id,
               t_name: profile.display_name,
@@ -59,8 +63,11 @@ module.exports = function(app, db) {
                 done(null, doc.ops[0]);
               }
             });
+        } else {
+          done(null, result.value);
         }
       });
+
     }
   ));
 
@@ -73,9 +80,6 @@ module.exports = function(app, db) {
       passReqToCallback: true
     },
     (req, accessToken, refreshToken, profile, done) => {
-      //console.log('a', accessToken)
-      console.log('b', profile)
-      //  console.log('d',cryptr.encrypt(refreshToken));
       /*
       fetch(`https://id.twitch.tv/oauth2/revoke?client_id=${process.env.TWITCH_CLIENT_ID}&token=${accessToken}`, {
           method: 'POST',
@@ -86,34 +90,28 @@ module.exports = function(app, db) {
         .catch(error => console.error(`Error Removing Token`));
         */
 
-      console.log('ses: ', req.session.passport.user)
-
       db.collection('userdata').findOneAndUpdate({
         _id: ObjectID(req.session.passport.user)
-      }, { $set: {
-        d_id: profile.id,
-        d_name: profile.username,
-        d_discriminator: profile.discriminator,
-        d_image: profile.avatar
-      } }, {
+      }, {
+        $set: {
+          d_id: profile.id,
+          d_name: profile.username,
+          d_discriminator: profile.discriminator,
+          d_image: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}?size=512`
+        }
+      }, {
         returnOriginal: false
       }, (error, result) => {
         if (error) {
-          console.log('err',  error);
+          console.log('err', error);
           done(null, false);
         } else {
-          console.log('res', result.value);
           done(null, result.value);
         }
       });
     }
 
   ));
-
-
-
-
-
 
   passport.serializeUser((user, done) => {
     done(null, user._id);

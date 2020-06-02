@@ -1,5 +1,6 @@
-const passport = require('passport');
-const bcrypt = require('bcrypt');
+const passport = require('passport'),
+    bcrypt = require('bcrypt'),
+    ObjectID = require('mongodb').ObjectID;
 
 module.exports = function(app, db) {
 
@@ -17,7 +18,7 @@ module.exports = function(app, db) {
     });
 
   app.get("/auth/twitch", passport.authenticate("twitch", {
-    forceVerify: true
+    forceVerify: false
   }));
 
   app.route('/auth/twitch/callback/').get(passport.authenticate('twitch', {
@@ -54,6 +55,22 @@ module.exports = function(app, db) {
 
   app.route('/logout')
     .get((req, res) => {
+      req.logout();
+      res.redirect('/login');
+    });
+
+  app.route('/remove')
+    .get((req, res, next) => {
+      db.collection('userdata').deleteOne({
+        _id: ObjectID(req.session.passport.user)
+      }, (error, result) => {
+        if (error) {
+          console.log('err', error);
+        };
+        console.log('Account Removed');
+        next();
+      });
+    }, (req, res) => {
       req.logout();
       res.redirect('/login');
     });
