@@ -10,7 +10,7 @@ const routes = require('./Routes.js'),
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'", 'static-cdn.jtvnw.net'],
+    defaultSrc: ["'self'", 'static-cdn.jtvnw.net', 'cdn.discordapp.com'],
     styleSrc: ["'self'", 'fonts.googleapis.com'],
     fontSrc: ["'self'", 'fonts.gstatic.com'],
     scriptSrc: ["'self'"],

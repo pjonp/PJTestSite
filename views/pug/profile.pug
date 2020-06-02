@@ -20,7 +20,7 @@ html
       p.
         #{t_name}
    #discordInfo.info
-    img(src=d_connected ? d_image : '/public/discorddefault.jpg')
+    img(src=d_connected ? `https://cdn.discordapp.com/avatars/${d_id}/${d_image}` : '/public/discorddefault.jpg')
     if d_connected
       .name
        p.
