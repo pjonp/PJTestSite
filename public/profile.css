@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+*{
+  margin: 0px;
+  font-family: Bangers;
+  font-size: 30px;
+}
+#header{
+  margin: 0px auto;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.button{
+  height: 50px;
+  width: 150px;
+  margin: 10px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid black;
+  border-radius: 30%;
+  color: seagreen;
+  text-decoration: none;
+}
+.warning {
+  color: red;
+}
+.button:hover{
+  background-color: cadetblue;
+  cursor: pointer;
+}
+#content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid black;
+  border-left: 0px;
+  border-right: 0px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.5), inset 0px 0px 100px 150px rgba(0, 0, 0, 0.5);
+}
+.info{
+  color: steelblue;
+  margin: 50px 20px;
+  background-color: white;
+  max-width: 300px;
+  height: 90%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  border: 3px solid black;
+  border-radius: 25px;
+}
+img{
+  width: 90%;
+  margin: 5%;
+  border-radius: 50%;
+}
+.name{
+  height: 60px;
+  width: 98%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+p{
+  display: inline-block;
+  white-space: nowrap;
+}
+@media only screen and (max-width: 500px) {
+  .info{
+    min-width: 150px;
+    margin: 50px 5px;
+  }
+}

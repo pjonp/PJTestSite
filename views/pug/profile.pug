@@ -1,0 +1,35 @@
+html
+ head
+    title PJ's Test Site
+    meta(name='description', content='Profile')
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='/public/profile.css')
+ body
+  #main
+  #header
+    a(href='/logout').button.
+     LOG OUT
+    a(href='/remove').button.warning.
+     DELETE DATA
+  #content
+   #twitchInfo.info
+    img(src=t_image)
+    .name
+      p.
+        #{t_name}
+   #discordInfo.info
+    img(src=d_connected ? d_image : '/public/discorddefault.jpg')
+    if d_connected
+      .name
+       p.
+        #{d_name}
+    else
+      .name
+       a(href='/auth/discord').button.
+        CONNECT
+
+
+script(src='/public/fitty.min.js')
+script(src='/public/profile.js')
