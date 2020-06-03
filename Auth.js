@@ -25,24 +25,18 @@ module.exports = function(app, db) {
   passport.use(new TwitchStrategy({
       clientID: process.env.TWITCH_CLIENT_ID,
       clientSecret: process.env.TWITCH_CLIENT_SECRET,
-      callbackURL: process.env.TWITCH_CALLBACK
+      callbackURL: process.env.TWITCH_CALLBACK,
+      scope: 'clips:edit'
     },
     function(accessToken, refreshToken, profile, done) {
-      //  console.log('d',cryptr.encrypt(refreshToken));
-      fetch(`https://id.twitch.tv/oauth2/revoke?client_id=${process.env.TWITCH_CLIENT_ID}&token=${accessToken}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-        })
-        .catch(error => console.error(`Error Removing Token`));
-
       db.collection('userdata').findOneAndUpdate({
         t_id: profile.id
       }, {
         $set: {
           t_name: profile.display_name,
-          t_image: profile.profile_image_url
+          t_image: profile.profile_image_url,
+          t_at: cryptr.encrypt(accessToken),
+          t_rt: cryptr.encrypt(refreshToken)
         }
       }, {
         returnOriginal: false
@@ -54,7 +48,9 @@ module.exports = function(app, db) {
           db.collection('userdata').insertOne({
               t_id: profile.id,
               t_name: profile.display_name,
-              t_image: profile.profile_image_url
+              t_image: profile.profile_image_url,
+              t_at: cryptr.encrypt(accessToken),
+              t_rt: cryptr.encrypt(refreshToken)
             },
             (err, doc) => {
               if (err) {
@@ -80,15 +76,6 @@ module.exports = function(app, db) {
       passReqToCallback: true
     },
     (req, accessToken, refreshToken, profile, done) => {
-      /*
-      fetch(`https://id.twitch.tv/oauth2/revoke?client_id=${process.env.TWITCH_CLIENT_ID}&token=${accessToken}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-        })
-        .catch(error => console.error(`Error Removing Token`));
-        */
 
       db.collection('userdata').findOneAndUpdate({
         _id: ObjectID(req.session.passport.user)
@@ -97,7 +84,7 @@ module.exports = function(app, db) {
           d_id: profile.id,
           d_name: profile.username,
           d_discriminator: profile.discriminator,
-          d_image: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}?size=512`
+          d_image: profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}?size=512` : `https://cdn.discordapp.com/embed/avatars/0.png`
         }
       }, {
         returnOriginal: false

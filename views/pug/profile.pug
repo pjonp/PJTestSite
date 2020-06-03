@@ -9,10 +9,6 @@ html
  body
   #main
   #header
-    a(href='/logout').button.
-     LOG OUT
-    a(href='/remove').button.warning.
-     DELETE DATA
   #content
    #twitchInfo.info
     img(src=t_image)
@@ -24,12 +20,14 @@ html
     if d_connected
       .name
        p.
-        #{d_name}
+        #{d_name}##{d_discriminator}
     else
       .name
        a(href='/auth/discord').button.
         CONNECT
-
+  #footer
+    a(href='/remove').button.warning.
+      DELETE DATA
 
 script(src='/public/fitty.min.js')
 script(src='/public/profile.js')

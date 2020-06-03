@@ -4,7 +4,6 @@ const passport = require('passport'),
 
 module.exports = function(app, db) {
 
-
   function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
@@ -14,7 +13,7 @@ module.exports = function(app, db) {
 
   app.route('/login')
     .get((req, res) => {
-      res.render(process.cwd() + '/views/pug/index');
+      res.render(process.cwd() + '/views/pug/login');
     });
 
   app.get("/auth/twitch", passport.authenticate("twitch", {
@@ -37,10 +36,8 @@ module.exports = function(app, db) {
     res.redirect('/')
   })
 
-  app
-    .route('/')
+  app.route('/')
     .get(ensureAuthenticated, (req, res) => {
-      //  console.log('req.user ?!?', req.user);
       res.render(process.cwd() + '/views/pug/profile', {
         t_id: req.user.t_id,
         t_name: req.user.t_name,
@@ -74,5 +71,4 @@ module.exports = function(app, db) {
       req.logout();
       res.redirect('/login');
     });
-
-}
+};

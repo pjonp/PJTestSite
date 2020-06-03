@@ -1,5 +1,6 @@
 const routes = require('./Routes.js'),
   auth = require('./Auth.js'),
+  api = require('./Api.js'),
   envvars = require('dotenv').config(),
   express = require('express'),
   bodyParser = require('body-parser'),
@@ -31,8 +32,9 @@ mongo.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology:
     console.log('Successful database connection');
     let db = client.db('pjtestsite');
 
-    auth(app, db)
-    routes(app, db)
+    auth(app, db);
+    routes(app, db);
+    api(app, db);
 
     //LAST ROUTE
     app.use((req, res, next) => {
