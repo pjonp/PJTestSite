@@ -1,6 +1,6 @@
 html
  head
-    title PJ's Test Site
+    title pj's test
     meta(name='description', content='Profile')
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
@@ -8,26 +8,38 @@ html
     link(rel='stylesheet', href='/public/profile.css')
  body
   #main
-  #header
-  #content
-   #twitchInfo.info
-    img(src=t_image)
-    .name
-      p.
-        #{t_name}
-   #discordInfo.info
-    img(src=d_connected ? d_image : '/public/discorddefault.jpg')
-    if d_connected
-      .name
+   #header
+     h1.
+       Connections
+   #content
+    #twitchInfo.info
+     img(src=t_image)
+     .name
        p.
-        #{d_name}##{d_discriminator}
-    else
-      .name
-       a(href='/auth/discord').button.
-        CONNECT
-  #footer
-    a(href='/remove').button.warning.
-      DELETE DATA
+         #{t_name}
+    #discordInfo.info
+     img(src=d_connected ? d_image : '/public/discorddefault.jpg')
+     if d_connected
+       .name
+        p.
+         #{d_name}##{d_discriminator}
+     else
+       .name
+        a(href='/auth/discord').button.
+         CONNECT
+   #footer
+     if d_connected
+       .footer
+         // revoke twitch token #[a.warning.footer(href='https://www.twitch.tv/settings/connections') here]
+     else
+       .footer.
+         this website is designed to link your twitch account to your discord account.
+       .footer.
+         by clicking connect & accepting the connection you will allow the app to save your public discord information: username, id, & profile image.
+       .footer.
+         you can remove your data at anytime.
+     a(href='/remove').button.warning.
+       DELETE DATA
 
 script(src='/public/fitty.min.js')
 script(src='/public/profile.js')

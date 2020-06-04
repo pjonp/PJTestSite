@@ -1,6 +1,6 @@
 html
  head
-    title PJ's Test Site
+    title pj's test
     meta(name='description', content='Profile')
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
@@ -8,9 +8,33 @@ html
     link(rel='stylesheet', href='/public/login.css')
  body
   #main
-  #header
-  #content
-   #twitchInfo.info
-    img(src='/public/TwitchGlitchPurple.png')
-    a(href='/auth/twitch').button.
-          CONNECT
+   #header
+     if removed
+       h1.warning.
+         all user data deleted!
+     else
+       .h1.
+         Welcome To PJ's Test
+   #content
+    #twitchInfo.info
+     img(src='/public/TwitchGlitchPurple.png')
+     a(href='/auth/twitch').button
+      if removed
+       p.
+         RE-CONNECT
+      else
+       p.
+         CONNECT
+   #footer
+     if removed
+       p.footer.
+         remove twitch connection #[a.warning.footer(href='https://www.twitch.tv/settings/connections') here]
+       p.footer.
+         remove discord connection: User Settings > Authorized Apps
+     else
+       p.footer.
+         this website is designed to link your twitch account to your discord account.
+       p.footer.
+         by clicking connect & accepting the connection you will allow the app to save your public twitch information: username, id, & profile image.
+       p.footer.
+         you can remove your data at anytime.

@@ -1,16 +1,12 @@
 const session = require('express-session'),
   passport = require('passport'),
-  bcrypt = require('bcrypt'),
   fetch = require('node-fetch'),
-  Cryptr = require('cryptr'),
   ObjectID = require('mongodb').ObjectID,
   LocalStrategy = require('passport-local'),
   TwitchStrategy = require("@d-fischer/passport-twitch").Strategy,
   DiscordStrategy = require('passport-discord').Strategy;
 
-module.exports = function(app, db) {
-
-  let cryptr = new Cryptr(process.env.SECRET);
+module.exports = (app, db, cryptr) => {
 
   app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -28,7 +24,7 @@ module.exports = function(app, db) {
       callbackURL: process.env.TWITCH_CALLBACK,
       scope: 'clips:edit'
     },
-    function(accessToken, refreshToken, profile, done) {
+    (accessToken, refreshToken, profile, done) => {
       db.collection('userdata').findOneAndUpdate({
         t_id: profile.id
       }, {
@@ -39,10 +35,10 @@ module.exports = function(app, db) {
           t_rt: cryptr.encrypt(refreshToken)
         }
       }, {
-        returnOriginal: false
+        returnOriginal: true
       }, (error, result) => {
         if (error) {
-          console.log('err', error);
+          console.error('err', error);
           done(null, false);
         } else if (!result.value) {
           db.collection('userdata').insertOne({
@@ -52,15 +48,33 @@ module.exports = function(app, db) {
               t_at: cryptr.encrypt(accessToken),
               t_rt: cryptr.encrypt(refreshToken)
             },
-            (err, doc) => {
-              if (err) {
+            (error, doc) => {
+              if (error) {
                 done(null, false);
               } else {
                 done(null, doc.ops[0]);
               }
             });
         } else {
-          done(null, result.value);
+          let temp = cryptr.decrypt(result.value.t_at)
+
+          fetch(`https://id.twitch.tv/oauth2/revoke?client_id=${process.env.TWITCH_CLIENT_ID}&token=${temp}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+            }).catch(error => console.error(`Error Removing Token`));
+
+            db.collection('userdata').findOne({
+              t_id: profile.id
+            }, (error, result) => {
+              if (error) {
+                console.error('error', error);
+                done(null, false);
+              } else {
+                done(null, result);
+              }
+            });
         }
       });
 
@@ -90,7 +104,7 @@ module.exports = function(app, db) {
         returnOriginal: false
       }, (error, result) => {
         if (error) {
-          console.log('err', error);
+          console.error('err', error);
           done(null, false);
         } else {
           done(null, result.value);

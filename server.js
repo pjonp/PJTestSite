@@ -6,7 +6,8 @@ const routes = require('./Routes.js'),
   bodyParser = require('body-parser'),
   mongo = require('mongodb').MongoClient,
   app = express(),
-  helmet = require('helmet')
+  helmet = require('helmet'),
+  Cryptr = require('cryptr');
 
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
@@ -25,6 +26,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+let cryptr = new Cryptr(process.env.SECRET);
+
 mongo.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
   if (err) {
     console.log('Database error: ' + err);
@@ -32,8 +35,8 @@ mongo.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology:
     console.log('Successful database connection');
     let db = client.db('pjtestsite');
 
-    auth(app, db);
-    routes(app, db);
+    auth(app, db, cryptr);
+    routes(app, db, cryptr);
     api(app, db);
 
     //LAST ROUTE

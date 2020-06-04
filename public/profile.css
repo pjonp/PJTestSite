@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
 *{
   margin: 0px;
   font-family: Bangers;
-  font-size: 30px;
+  font-size: 40px;
 }
 body{
   background-color: rgb(240, 240, 255);
@@ -16,14 +17,14 @@ body{
 }
 #footer{
   margin: 0px auto;
-  height: 100px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 .button{
   height: 50px;
-  width: 150px;
+  width: 180px;
   margin: 10px;
   background-color: white;
   display: flex;
@@ -79,6 +80,11 @@ img{
 p{
   display: inline-block;
   white-space: nowrap;
+}
+.footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 18px;
 }
 @media only screen and (max-width: 500px) {
   .info{

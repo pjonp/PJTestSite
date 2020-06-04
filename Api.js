@@ -1,4 +1,4 @@
-module.exports = function(app, db) {
+module.exports = (app, db) => {
 
   app.route('/api/twitchid/:userid')
     .get((req, res, next) => {
